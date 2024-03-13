@@ -1,0 +1,147 @@
+* {
+    font-family: 'Cairo', sans-serif !important;
+    scroll-behavior: smooth;
+}
+
+.vh-90{
+    width: 90vh !important;
+}
+
+.rounded-5 {
+    border-radius: 2rem !important
+}
+
+.rounded-4 {
+    border-radius: 1.5rem !important
+}
+
+.resize-none{
+    resize: none !important;
+}
+
+.counting-main {
+    width: 100%;
+}
+
+.main-parent {
+    height: calc(100vh - 120px);
+}
+
+footer{
+    max-height: 60px;
+    padding: 25px 0;
+}
+
+
+/* Large screens (min-width: 1200px) */
+@media only screen and (min-width: 1200px) {
+    .counting-main {
+        width: 50% !important;
+    }
+
+    nav a, nav li, footer p, footer a {
+        font-size: 18px !important;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+    .counting-main {
+        width: 75% !important;
+    }
+
+    nav a, nav li, footer p, footer a {
+        font-size: 14px !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .counting-main {
+        width: 90% !important;
+    }
+    nav a, nav li, footer p, footer a {
+        font-size: 13px !important;
+    }
+}
+
+.my-overflow {
+    overflow: auto;
+    overflow-x: hidden;
+    max-height: 60vh;
+}
+
+h1 {
+    width: fit-content;
+    padding: 8px 50px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 .5rem 0.9rem rgba(0,0,0,0.25);
+}
+
+.swal2-input-no-spinner::-webkit-inner-spin-button,
+.swal2-input-no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.swal2-input-no-spinner {
+    -moz-appearance: textfield;
+}
+
+.selected-row {
+    background-color: rgb(226, 239, 242); /* Set your desired background color here */
+}
+
+.my-scroll::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 100px;
+}
+
+.my-scroll::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 100px;
+}
+
+.my-scroll::-webkit-scrollbar-track {
+    border-radius: 100px;
+    width: 16px;
+    background-color: transparent;
+}
+
+
+
+input .dateDetails::-webkit-inner-spin-button,
+input.dateDetails::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.navbar-toggler-icon-black {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='black' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+
+.nav-link::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #329da8;
+    transition: width .3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+    transition: width .3s;
+}
+
+.nav-link.active::after {
+    width: 100%;
+    transition: width .3s;
+}
+
+.active {
+    color: var(--color) !important;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

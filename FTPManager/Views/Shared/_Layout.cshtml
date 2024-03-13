@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> FTPManager - @ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="~/images/logo_light.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header class="fixed-top">
+        <nav class="navbar navbar-expand-lg  bg-body-tertiary  shadow">
+            <div class="container-fluid d-flex justify-content-between px-5">
+                <a class="navbar-brand" asp-controller="FTP" asp-action="Index"> <img src="~/images/logo.png" id="logo" alt="logo" width="50px" /></a>
+                <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon navbar-toggler-icon-black "></span>
+                </button>
+                <div class="collapse navbar-collapse flex-grow-1 justify-content-between" id="navbarSupportedContent">
+                    <div></div>
+                    <ul class="navbar-nav d-flex justify-content-center  p-0 gap-lg-5 mb-2 mb-lg-0 text-center">
+                        <li class="nav-item m-auto">
+                            <a class="nav-link text-dark fw-bolder" id="ftp" asp-controller="FTP" asp-action="Index">Manage Files</a>
+                        </li>
+                        <li class="nav-item m-auto">
+                            <button type="button" class="btn btn-primary rounded-4 px-3" data-bs-toggle="modal" id="ConnectionModalBtn" data-bs-target="#ConnectModal">
+                                Connect to FTP Server
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="headerH"></div>
+
+    <div class="main-parent d-flex align-items-center justify-content-center">
+        <center role="main" class="container">
+            @RenderBody()
+        </center>
+    </div>
+
+    <div class="footerH"></div>
+
+    <footer class="fixed-bottom border-top footer text-muted bg-light py-2 shadow d-flex align-items-center justify-content-center">
+        Built & Developed by <a class="text-black text-decoration-none fw-bolder px-1" href="https://github.com/abdumezar">Abdulrhman Mezar</a>.
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
