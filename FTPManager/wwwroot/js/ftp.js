@@ -292,6 +292,7 @@ $("#connect-btn").on("click", () => {
             $("#ConnectionModalBtn").removeClass("btn-primary");
             $("#ConnectionModalBtn").addClass("btn-success");
             $("#ConnectionModalBtn").prop("disabled", true);
+            $('#upload-modal-btn').removeClass('d-none');
             getFiles('');
         },
         error: function (error) {
