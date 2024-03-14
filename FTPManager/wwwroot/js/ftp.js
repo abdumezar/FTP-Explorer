@@ -1,17 +1,47 @@
 var currentPath = "";
 var allowedExt = "";
 var replacePath = "";
+var backPath = "";
+
 $('#ftp').addClass('active');
 
-ReConnect();
+if (localStorage.getItem("currentPath") !== null) {
+    ReConnect();
+}
+
+function ReConnect() {
+    $.ajax({
+        url: "/FTP/reconnect",
+        type: "Post",
+        contentType: false,
+        processData: false,
+        success: function () {
+            $('#explorer').removeClass('d-none');
+            $("#connect-btn").html("Connected!").removeClass("btn-warning").addClass("btn-success");
+            $("#connectionResponse").html("Connected Successfully!").addClass("text-success");
+            $('#upload-modal-btn').removeClass('d-none');
+            $('#ConnectModal').modal('hide');
+            $('#connectionResponse').html('');
+            $('#ConnectionModalBtn').html('Disconnect').removeClass('btn-primary').addClass('btn-danger');
+            lastPath = localStorage.getItem("currentPath");
+            if (lastPath == null) {
+                lastPath = "";
+                localStorage.setItem("currentPath", lastPath);
+            }
+            getFiles(lastPath);
+        },
+        error: function () {
+            Disconnected();
+        }
+    });
+}
 
 function getFiles(path) {
     currentPath = path;
-    console.log(path);
     if (path.length != 0) {
         localStorage.setItem("currentPath", path);
     } else {
-        localStorage.removeItem("currentPath");
+        localStorage.setItem("currentPath", "");
     }
 
     $("#loadingIcon").removeClass("d-none");
@@ -20,9 +50,10 @@ function getFiles(path) {
         type: "GET",
         success: function (response) {
             $("#showFiles").html("");
+            buildPaths(path);
             if (path.length != 0) {
                 $("#showFiles").append(`
-                    <tr onclick="getFiles('${getParentPath(path)}')">
+                    <tr onclick="getFiles('${backPath}')">
                         <td class="ps-4 cursor-pointer align-middle fw-bolder" colspan="4">
                             <i class="fa-solid fa-chevron-left me-2"></i>
                             Go Back
@@ -50,23 +81,19 @@ function getFiles(path) {
                         <td class="col-3">${item.lastModified}</td>
                         <td class="col-4">
                             <div class="d-flex justify-content-around">
-                                <i class="px-5 py-2 rounded-4 btn btn-outline-primary ${isImage(item.path) ? "d-block" : "invisible"
-                        } fa-solid fa-eye me-3" title="Preview Image" onclick="previewImage('${item.path
-                        }')"></i>
-                                <i class="px-5 py-2 rounded-4 btn btn-outline-warning fa-solid fa-arrow-right-arrow-left me-3" title="Exchange The Same File" onclick="replaceFile('${item.path
-                        }')"></i>
-                                <i class="px-5 py-2 rounded-4 btn btn-outline-success fa-solid fa-download me-3 cursor-pointer" title="Download This File" onclick="downloadFile('${item.path
-                        }')"></i>
-                                <i class="px-5 py-2 rounded-4 btn btn-outline-danger fa-solid fa-trash-can cursor-pointer" title="Delete This File" onclick="deleteFile('${item.path
-                        }')"></i>
+                                <i class="px-5 py-2 rounded-4 btn btn-outline-primary ${isImage(item.path) ? "d-block" : "invisible"} fa-solid fa-eye me-3" title="Preview Image" onclick="previewImage('${item.path}')"></i>
+                                <i class="px-5 py-2 rounded-4 btn btn-outline-warning fa-solid fa-arrow-right-arrow-left me-3" title="Exchange The Same File" onclick="replaceFile('${item.path}')"></i>
+                                <i class="px-5 py-2 rounded-4 btn btn-outline-success fa-solid fa-download me-3 cursor-pointer" title="Download This File" onclick="downloadFile('${item.path}')"></i>
+                                <i class="px-5 py-2 rounded-4 btn btn-outline-danger fa-solid fa-trash-can cursor-pointer" title="Delete This File" onclick="deleteFile('${item.path}')"></i>
                             </div>
                         </td>
                     </tr>`;
                 }
                 $("#showFiles").append(listItem);
             });
+            
             $("#loadingIcon").addClass("d-none");
-            buildPaths(path);
+            
         },
         error: function () {
             Disconnected();
@@ -263,9 +290,6 @@ $("#connect-btn").on("click", () => {
     $("#connect-btn").prop("disabled", true);
     $("#connect-btn").removeClass("btn-primary");
     $("#connect-btn").addClass("btn-warning");
-    $("#ftpHost").prop("disabled", false);
-    $("#ftpUser").prop("disabled", false);
-    $("#ftpPass").prop("disabled", false);
     var formData = new FormData($("#connect-form")[0]);
 
     formData.append("Host", $("#ftpHost").val());
@@ -278,32 +302,37 @@ $("#connect-btn").on("click", () => {
         data: formData,
         contentType: false,
         processData: false,
-        success: function (response) {
+        success: function () {
+            $('#explorer').removeClass('d-none');
+            $('#ConnectModal').modal('hide');
+            $('#ConnectionModalBtn').html('Disconnect');
+            $('#ConnectionModalBtn').removeClass('btn-primary');
+            $('#ConnectionModalBtn').addClass('btn-danger');
             $("#connect-btn").html("Connected!");
             $("#connect-btn").removeClass("btn-warning");
             $("#connect-btn").addClass("btn-success");
-            $("#ConnectModal").modal("hide");
             $("#connectionResponse").addClass("text-success");
             $("#connectionResponse").html("Connected Successfully!");
-            $("#ftpHost").prop("disabled", true);
-            $("#ftpUser").prop("disabled", true);
-            $("#ftpPass").prop("disabled", true);
-            $("#ConnectionModalBtn").html("Connected!");
-            $("#ConnectionModalBtn").removeClass("btn-primary");
-            $("#ConnectionModalBtn").addClass("btn-success");
-            $("#ConnectionModalBtn").prop("disabled", true);
             $('#upload-modal-btn').removeClass('d-none');
+            localStorage.setItem("currentPath", '');
             getFiles('');
         },
-        error: function (error) {
-            $("#connect-btn").html("Connect to FTP Server");
-            $("#connect-btn").removeClass("btn-warning");
-            $("#connect-btn").addClass("btn-primary");
-            $("#connect-btn").prop("disabled", false);
-            $("#connectionResponse").addClass("text-danger");
-            $("#connectionResponse").html("Invalid Connection Credentials!");
+        error: function () {
+            Disconnected();
         },
     });
+});
+
+$("#ConnectionModalBtn").on("click", () => {
+    if ($("#ConnectionModalBtn").html() === "Disconnect") {
+        Disconnected();
+        $.ajax({
+            url: "/FTP/disconnect",
+            type: "Post",
+            contentType: false,
+            processData: false
+        });
+    }
 });
 
 function isImage(path) {
@@ -335,105 +364,28 @@ function buildPaths(path) {
     for (var i = 1; i < segments.length; i++) {
         cummulative += "/" + segments[i];
         partialPath += `<li class="cursor-pointer breadcrumb-item" onclick = "getFiles('${cummulative}')"> ${segments[i]} </li>`;
+        if (i == segments.length - 2) {
+            backPath = cummulative;
+        }
+    }
+
+    if (segments.length <= 2) {
+        backPath = "";
     }
 
     $("#path").append(partialPath);
     $("#path li:last-child").addClass("text-primary");
 }
 
-function getParentPath(path) {
-    var segments = path.split("/");
-    segments.pop();
-    if (!segments[segments.length - 1].includes(".")) segments.pop();
-    var parentPath = segments.join("/");
-    if (path.endsWith("/")) {
-        parentPath += "/";
-    }
-    return parentPath;
-}
-
-function ReConnect() {
-    $.ajax({
-        url: "/FTP/reconnect",
-        type: "Post",
-        contentType: false,
-        processData: false,
-        success: function () {
-            $('#connect-btn').html('Connected!');
-            $('#connect-btn').removeClass('btn-warning');
-            $('#connect-btn').addClass('btn-success');
-            $('#ConnectModal').modal('hide');
-            $('#connectionResponse').addClass('text-success');
-            $('#connectionResponse').html('Connected Successfully!');
-            $('#ftpHost').prop('disabled', true);
-            $('#ftpUser').prop('disabled', true);
-            $('#ftpPass').prop('disabled', true);
-            $('#ConnectionModalBtn').html('Connected!');
-            $('#ConnectionModalBtn').removeClass('btn-primary');
-            $('#ConnectionModalBtn').addClass('btn-success');
-            $('#ConnectionModalBtn').prop('disabled', true);
-            $('#upload-modal-btn').removeClass('d-none');
-
-            lastPath = localStorage.getItem("currentPath");
-            if (lastPath == null) {
-                lastPath = "";
-                localStorage.setItem("currentPath", lastPath);
-            }
-            
-            getFiles(lastPath);
-        },
-        error: function () {
-            Disconnected();
-        }
-    });
-}
-
-async function Swalfire(options) {
-    return await Swal.fire({
-        heightAuto: false,
-        customClass: {
-            confirmButton: "px-5 rounded-5 btn btn-success ms-2 shadow-sm",
-            cancelButton: "px-3 rounded-5 btn btn-danger ms-2 shadow-sm",
-            popup: "rounded-5",
-            input: "rounded-5"
-        },
-        buttonsStyling: false,
-        ...options
-    });
-}
-
-function Swalmixin(options) {
-    return Swal.mixin({
-        heightAuto: false,
-        customClass: {
-            confirmButton: "px-5 rounded-5 btn btn-success ms-2 shadow-sm",
-            cancelButton: "px-3 rounded-5 btn btn-danger ms-2 shadow-sm",
-            popup: "rounded-5"
-        },
-        buttonsStyling: false,
-        ...options
-    });
-}
-
-
-// General AJAX Error Handler
 function Disconnected() {
-    $('#connect-btn').html('Connect to FTP Server');
-    $('#connect-btn').removeClass('btn-warning');
-    $('#connect-btn').addClass('btn-primary');
-    $("#connect-btn").prop('disabled', false);
-    $('#ftpHost').prop('disabled', false);
-    $('#ftpUser').prop('disabled', false);
-    $('#ftpPass').prop('disabled', false);
-    $('#ConnectionModalBtn').html('Connect');
-    $('#ConnectionModalBtn').removeClass('btn-success');
-    $('#ConnectionModalBtn').addClass('btn-primary');
-    $('#ConnectionModalBtn').prop('disabled', false);
+    $('#ConnectionModalBtn').html('Connect to FTP Server').removeClass('btn-danger').addClass('btn-primary');
+    $("#connectionResponse").html("");
     $('#upload-modal-btn').addClass('d-none');
-
     $('#loadingIcon').addClass('d-none');
-
     $('#ftpHost').val("");
     $('#ftpUser').val("");
     $('#ftpPass').val("");
+    $('#explorer').addClass('d-none');
+    $("#connect-btn").prop("disabled", false).html("Connect").removeClass("btn-warning btn-success").addClass("btn-primary");
+    localStorage.removeItem("currentPath");
 }

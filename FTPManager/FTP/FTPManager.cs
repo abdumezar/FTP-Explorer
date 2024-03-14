@@ -34,6 +34,7 @@ namespace FTPManagerProject.FTP
         #region Manage the Connection
         public static bool Connect(string host, string username, string password, string ConnectionId)
         {
+            if (IsExist(ConnectionId)) Disconnect(ConnectionId);
             var client = new FtpClient(host, username, password, 21);
             client.Connect();
             bool check = client.IsConnected;

@@ -8,6 +8,12 @@ namespace FTPManagerProject
 
             builder.Services.AddControllersWithViews();
 
+            // allow 3rd party cookies
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -16,12 +22,18 @@ namespace FTPManagerProject
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/FTP/Index");
+
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None,
+            });
 
-            app.UseAuthorization();
+            app.UseRouting();
 
             app.MapControllerRoute(
                 name: "default",

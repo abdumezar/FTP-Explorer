@@ -15,7 +15,7 @@ namespace FTPManagerProject.Controllers
             return View();
         }
 
-        #region Connect
+        #region Manage Connection
         [HttpPost("connect")]
         public async Task<IActionResult> Connect([FromForm] FTPUser account)
         {
@@ -59,6 +59,13 @@ namespace FTPManagerProject.Controllers
                 }
             }
             return NotFound();
+        }
+
+        [HttpPost("disconnect")]
+        public async Task<IActionResult> DisConnect()
+        {
+            FTPManager.Disconnect(HttpContext.Connection.Id);
+            return Ok();
         }
 
         #endregion
