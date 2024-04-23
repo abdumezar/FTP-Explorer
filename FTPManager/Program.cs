@@ -16,15 +16,16 @@ namespace FTPManagerProject
 
             var app = builder.Build();
 
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            app.UseExceptionHandler("/Home/Error");
+
+            //if (!app.Environment.IsDevelopment())
+            //{
+            //    app.UseHsts();
+            //}
 
             app.UseStatusCodePagesWithReExecute("/FTP/Index");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
