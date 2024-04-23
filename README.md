@@ -23,7 +23,7 @@ With FTP Explorer, users can:
 
 ## Usage
 
-You can access FTP Explorer through the following link: [FTP Explorer](https://abdumezar-001-site7.htempurl.com/FTP)
+You can access FTP Explorer through the following link: [FTP Explorer](https://ftp.izitechs.com/FTP/Index)
 
 To use FTP Explorer:
 
