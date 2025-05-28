@@ -1,46 +1,30 @@
-namespace FTPManagerProject
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+// allow 3rd party cookies
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+    options.Cookie.SameSite = SameSiteMode.None;
+});
 
-            builder.Services.AddControllersWithViews();
+var app = builder.Build();
 
-            // allow 3rd party cookies
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.SameSite = SameSiteMode.None;
-            });
+app.UseExceptionHandler("/Home/Error");
 
-            var app = builder.Build();
+app.UseStatusCodePagesWithReExecute("/FTP/Index");
 
-            app.UseExceptionHandler("/Home/Error");
+app.UseStaticFiles();
 
-            //if (!app.Environment.IsDevelopment())
-            //{
-            //    app.UseHsts();
-            //}
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+});
 
-            app.UseStatusCodePagesWithReExecute("/FTP/Index");
+app.UseRouting();
 
-            //app.UseHttpsRedirection();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.UseStaticFiles();
-
-            app.UseCookiePolicy(new CookiePolicyOptions
-            {
-                MinimumSameSitePolicy = SameSiteMode.None,
-            });
-
-            app.UseRouting();
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.Run();
-        }
-    }
-}
+app.Run();
