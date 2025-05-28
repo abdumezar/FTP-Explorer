@@ -1,10 +1,10 @@
 # FTP Explorer
 
-FTP Explorer is a web application developed using ASP.NET Core 7. It allows users to connect to their FTP server and perform various file operations such as exploring files, previewing images, downloading files, uploading files, deleting files, and exchanging files with validation based on file extension.
+FTP Explorer is a web application developed using ASP.NET Core 9. It allows users to connect to their FTP server and perform various file operations such as exploring files, previewing images, downloading files, uploading files, deleting files, and exchanging files with validation based on file extension.
 
 ## Technologies Used
 
-- **ASP.NET Core 7**: The web application framework used for developing the backend server logic.
+- **ASP.NET Core 9**: The web application framework used for developing the backend server logic.
 - **Bootstrap**: Frontend framework for designing responsive and appealing user interfaces.
 - **Fontawesome**: Icon toolkit used for adding scalable vector icons to the application.
 - **jQuery**: JavaScript library for simplifying client-side scripting and DOM manipulation.
@@ -22,9 +22,6 @@ With FTP Explorer, users can:
 - Exchange files with validation ensuring files have the same extension.
 
 ## Usage
-
-You can access FTP Explorer through the following link: [FTP Explorer](https://ftp.izitechs.com/FTP/Index)
-
 To use FTP Explorer:
 
 1. Provide the FTP server credentials (host, username, password) to establish a connection.
